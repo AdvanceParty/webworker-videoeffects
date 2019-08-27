@@ -6,4 +6,5 @@ module.exports = {
   PAUSE: 'pause',
   PROGESS: 'progress',
   DRAW: 'draw',
+  INIT: 'init',
 };

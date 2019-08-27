@@ -4,5 +4,8 @@ body {
 
 #canvas {
   display: block;
-  border: 1px solid #ccc;
+}
+
+video {
+  width: 40%;
 }

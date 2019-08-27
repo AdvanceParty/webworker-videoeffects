@@ -1,18 +1,19 @@
+import Effective from './Effective';
+
 const MESSAGE_TYPE = require('./messageType');
+const effective = new Effective();
+// effective.addEffect('invertColors');
+effective.addEffect('rotateColors');
 
-let canvas;
-let context;
-
-addEventListener('message', event => {
-  switch (event.data.type) {
-    case MESSAGE_TYPE.READY:
-      canvas = event.data.offscreen;
-      context = canvas.getContext('2d');
+self.addEventListener('message', event => {
+  const data = event.data;
+  switch (data.type) {
+    case MESSAGE_TYPE.INIT:
+      effective.initCanvas(data.canvas);
       break;
     case MESSAGE_TYPE.DRAW:
-      if (context) {
-        context.drawImage(event.data.imageBitmap, 0, 0);
-      }
+      effective.draw(data.imageBitmap);
+      postMessage(MESSAGE_TYPE.DRAW, '');
       break;
     default:
       postMessage(MESSAGE_TYPE.ERROR, `Unrecognised event type '${event.data.type}'`);
