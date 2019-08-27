@@ -1,5 +1,4 @@
 import FrameRater from './FrameRater';
-import { runInThisContext } from 'vm';
 
 class Effective {
   constructor() {
@@ -8,7 +7,11 @@ class Effective {
     this.width = 0;
     this.height = 0;
     this.effectsChain = [];
-    this.fr = new FrameRater();
+  }
+
+  showFrameRate() {
+    this.showFrameRate = true;
+    this.fr = this.fr ? this.fr : new FrameRater();
   }
 
   addEffect(effectName) {
@@ -20,8 +23,6 @@ class Effective {
     this.context = this.canvas.getContext('2d');
     this.width = 0;
     this.height = 0;
-
-    if (this.fr) this.fr.start();
   }
 
   draw(imageBitmap) {
@@ -42,12 +43,10 @@ class Effective {
 
     this.context.putImageData(imageData, 0, 0);
 
-    if (this.fr) {
-      this.context.fillStyle = 'white';
-      this.context.font = '30px Arial';
-      const msg = `${this.fr.fps} FPS`;
-      this.context.fillText(msg, 10, 50);
-      this.context.strokeText(msg, 10, 50);
+    if (this.showFrameRate) {
+      this.context.font = '25px Arial';
+      this.context.fillStyle = '#cc0066';
+      this.context.fillText(`${this.fr.fps} FPS`, 10, 50);
     }
   }
 
@@ -70,11 +69,6 @@ class Effective {
   invertColors(rgba) {
     const { r, g, b, a } = rgba;
     return { r: r ^ 255, g: g ^ 255, b: b ^ 255, a };
-  }
-
-  rotateColors(rgba) {
-    const { r, g, b, a } = rgba;
-    return { r: r >> 1, g: g >> 1, b: b >> 1, a };
   }
 
   swapRGB(rgba) {

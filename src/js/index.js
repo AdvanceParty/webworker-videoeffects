@@ -1,7 +1,7 @@
 require('../css/styles.css');
 
 const MESSAGE_TYPE = require('./messageType');
-const videoSrc = require('../vids/gravity.mp4');
+const videoSrc = require('../vids/demo.mp4');
 const worker = new Worker('canvas.worker.js');
 const canvas = document.createElement('canvas');
 const video = document.createElement('video');
@@ -12,12 +12,11 @@ const main = () => {
   initWorker(canvas);
 
   video.src = videoSrc;
-
   video.loop = true;
   video.addEventListener('canplay', evt => onVideoReady(evt));
   video.onplay = () => draw();
   document.body.appendChild(canvas);
-  document.body.appendChild(video);
+  // document.body.appendChild(video);
 };
 
 const onVideoReady = evt => {

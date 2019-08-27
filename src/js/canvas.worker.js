@@ -2,8 +2,8 @@ import Effective from './Effective';
 
 const MESSAGE_TYPE = require('./messageType');
 const effective = new Effective();
-// effective.addEffect('invertColors');
-effective.addEffect('rotateColors');
+effective.showFrameRate();
+effective.addEffect('invertColors');
 
 self.addEventListener('message', event => {
   const data = event.data;
@@ -13,6 +13,7 @@ self.addEventListener('message', event => {
       break;
     case MESSAGE_TYPE.DRAW:
       effective.draw(data.imageBitmap);
+
       postMessage(MESSAGE_TYPE.DRAW, '');
       break;
     default:

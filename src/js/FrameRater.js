@@ -1,25 +1,8 @@
 export class FrameRater {
   constructor() {
-    // this._fps = 0;
-    // this._fCount = 0;
-    // this.reset();
-    // this.stop();
-  }
-
-  _reset() {
-    this._startTime = Date.now();
-    this._fCount = 0;
-    this._fps = 0;
-  }
-
-  start() {
-    this._reset();
-    this._running = true;
+    this._times = [];
+    this._fps;
     this._update();
-  }
-
-  stop() {
-    this._running = false;
   }
 
   get fps() {
@@ -27,14 +10,16 @@ export class FrameRater {
   }
 
   _update() {
-    this._fCount += 1;
-    const elapsed = (Date.now() - this._startTime) / 1000;
-    this._fps = (this._fCount / elapsed).toFixed(3);
-    if (this._running) {
-      requestAnimationFrame(() => {
-        this._update();
-      });
-    }
+    requestAnimationFrame(() => {
+      const now = performance.now();
+      while (this._times.length > 0 && this._times[0] <= now - 1000) {
+        this._times.shift();
+      }
+      this._times.push(now);
+      this._fps = this._times.length;
+      this._update();
+    });
   }
 }
+
 export default FrameRater;
