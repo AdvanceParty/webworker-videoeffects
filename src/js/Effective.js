@@ -1,4 +1,5 @@
 import FrameRater from './FrameRater';
+import { runInThisContext } from 'vm';
 
 class Effective {
   constructor() {

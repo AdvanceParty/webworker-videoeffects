@@ -11,11 +11,11 @@ let imageCapture, track;
 const main = () => {
   initWorker(canvas);
 
-  video.loop = true;
   video.src = videoSrc;
-  video.oncanplay = evt => onVideoReady(evt);
-  video.onplay = () => draw();
 
+  video.loop = true;
+  video.addEventListener('canplay', evt => onVideoReady(evt));
+  video.onplay = () => draw();
   document.body.appendChild(canvas);
   document.body.appendChild(video);
 };
