@@ -1,16 +1,11 @@
-const slowFunc = require('./slowFunc');
+let canvas;
+let context;
 
-onmessage = function(evt) {
-  const result = slowFunc();
-  self.postMessage({ result });
-  // self.postMessage({ canvas }, [canvas]);
-};
-
-// const { canvas } = evt.data;
-//   context = canvas.getContext('2d');
-//   console.log(context);
-//   context.beginPath();
-//   context.lineWidth = 1;
-//   context.strokeStyle = '#ffffff';
-//   context.rect(10, 10, 20, 20);
-//   context.stroke();
+addEventListener('message', event => {
+  if (event.data.offscreen) {
+    canvas = event.data.offscreen;
+    context = canvas.getContext('2d');
+  } else if (event.data.imageBitmap && context) {
+    context.drawImage(event.data.imageBitmap, 0, 0);
+  }
+});
