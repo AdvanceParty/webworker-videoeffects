@@ -2,4 +2,6 @@ node_modules
 .cache
 .log
 dist
-src/vids
+sampleVids/*.mp4
+sampleVids/*.webm
+sampleVids/*.mov

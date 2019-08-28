@@ -1,7 +1,7 @@
 require('../css/styles.css');
 
 const MESSAGE_TYPE = require('./messageType');
-const videoSrc = require('../vids/movie.mp4');
+const videoSrc = require('../../sampleVids/movie.mp4');
 const worker = new Worker('canvas.worker.js');
 const canvas = document.createElement('canvas');
 const video = document.createElement('video');
@@ -27,6 +27,7 @@ const onVideoReady = evt => {
 };
 
 const draw = async () => {
+  if (video.paused) return;
   try {
     // ToDo: throws "Uncaught in promise" on first frame
     // when restarting a paused video. Try...catch gets over the issue for now
