@@ -1,7 +1,7 @@
 require('../css/styles.css');
 
 const MESSAGE_TYPE = require('./messageType');
-const videoSrc = require('../vids/demo.mp4');
+const videoSrc = require('../vids/movie.mp4');
 const worker = new Worker('canvas.worker.js');
 const canvas = document.createElement('canvas');
 const video = document.createElement('video');
@@ -15,19 +15,25 @@ const main = () => {
   video.loop = true;
   video.addEventListener('canplay', evt => onVideoReady(evt));
   video.onplay = () => draw();
+  video.onclick = evt => (video.paused ? video.play() : video.pause());
+
+  document.body.appendChild(video);
   document.body.appendChild(canvas);
-  // document.body.appendChild(video);
 };
 
 const onVideoReady = evt => {
   [track] = stream.getVideoTracks();
   imageCapture = new ImageCapture(track);
-  evt.target.play();
 };
 
 const draw = async () => {
-  const imageBitmap = await imageCapture.grabFrame();
-  worker.postMessage({ imageBitmap, type: MESSAGE_TYPE.DRAW }, [imageBitmap]);
+  try {
+    // ToDo: throws "Uncaught in promise" on first frame
+    // when restarting a paused video. Try...catch gets over the issue for now
+    // but a proper fix should be implemented at some point
+    const imageBitmap = await imageCapture.grabFrame();
+    worker.postMessage({ imageBitmap, type: MESSAGE_TYPE.DRAW }, [imageBitmap]);
+  } catch (e) {}
 };
 
 const initWorker = () => {
