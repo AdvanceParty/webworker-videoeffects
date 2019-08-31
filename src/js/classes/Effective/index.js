@@ -34,7 +34,8 @@
 // ---- Further Reading ----
 // bit.ly/ArrayBuffers-in-JS
 
-import FrameRater from './FrameRater';
+import FrameRater from '../FrameRater';
+import { pipe } from '../../utils/compositionTools';
 
 class Effective {
   constructor() {
@@ -54,8 +55,6 @@ class Effective {
     const effectFunc = effects[effectName];
     this._effects.push(effectFunc);
     this.effectsPipe = pipe(...this._effects);
-    console.log('func', effectFunc);
-    console.log('pipe', this.effectsPipe);
   }
 
   initCanvas(canvas) {
@@ -100,9 +99,6 @@ class Effective {
 }
 
 export default Effective;
-
-const _pipe = (f, g) => (...args) => g(f(...args));
-const pipe = (...fns) => fns.reduce(_pipe);
 
 const effects = {
   invertColors(px) {
