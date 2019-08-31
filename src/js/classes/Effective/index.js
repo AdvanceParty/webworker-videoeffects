@@ -1,3 +1,70 @@
+// **** See notes at bottom of file re: BufferArrays
+
+import FrameRater from '../FrameRater';
+import { pipe } from '../../utils/compositionTools';
+
+class Effective {
+  constructor() {
+    this.canvas = null;
+    this.context = null;
+    this.width = 0;
+    this.height = 0;
+    this._effects = [];
+  }
+
+  showFrameRate() {
+    this.showFrameRate = true;
+    this.fr = this.fr ? this.fr : new FrameRater();
+  }
+
+  addEffect(effect) {
+    this._effects.push(effect);
+    this.effectsPipe = pipe(...this._effects);
+  }
+
+  initCanvas(canvas) {
+    this.canvas = canvas;
+    this.context = this.canvas.getContext('2d');
+    this.width = 0;
+    this.height = 0;
+  }
+
+  draw(imageBitmap) {
+    if (!this.context) return;
+    if (!this.width || !this.height) {
+      this.width = imageBitmap.width;
+      this.height = imageBitmap.height;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+    }
+
+    if (this._effects.length > 0) {
+      this.context.drawImage(imageBitmap, 0, 0);
+      const imageData = this.context.getImageData(0, 0, this.width, this.height);
+      this.traversePixels(imageData.data.buffer, this.width, this.height);
+      this.context.putImageData(imageData, 0, 0);
+    }
+
+    if (this.showFrameRate) {
+      this.context.font = '15px Arial';
+      this.context.fillStyle = '#cc0066';
+      this.context.fillText(`${this.fr.fps} FPS`, 10, 50);
+    }
+  }
+
+  traversePixels(buffer, width, height) {
+    const sourceBuffer32 = new Uint32Array(buffer);
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        const pos = x + y * width;
+        sourceBuffer32[pos] = this.effectsPipe(sourceBuffer32[pos]);
+      }
+    }
+  }
+}
+
+export default Effective;
+
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // :::::::::::::::::: IMAGE DATA AND BUFFERS ::::::::::::::::::
 
@@ -33,92 +100,3 @@
 
 // ---- Further Reading ----
 // bit.ly/ArrayBuffers-in-JS
-
-import FrameRater from '../FrameRater';
-import { pipe } from '../../utils/compositionTools';
-
-class Effective {
-  constructor() {
-    this.canvas = null;
-    this.context = null;
-    this.width = 0;
-    this.height = 0;
-    this._effects = [];
-  }
-
-  showFrameRate() {
-    this.showFrameRate = true;
-    this.fr = this.fr ? this.fr : new FrameRater();
-  }
-
-  addEffect(effectName) {
-    const effectFunc = effects[effectName];
-    this._effects.push(effectFunc);
-    this.effectsPipe = pipe(...this._effects);
-  }
-
-  initCanvas(canvas) {
-    this.canvas = canvas;
-    this.context = this.canvas.getContext('2d');
-    this.width = 0;
-    this.height = 0;
-  }
-
-  draw(imageBitmap) {
-    if (!this.context) return;
-    if (!this.width || !this.height) {
-      this.width = imageBitmap.width;
-      this.height = imageBitmap.height;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-    }
-
-    if (this._effects.length > 0) {
-      this.context.drawImage(imageBitmap, 0, 0);
-      const imageData = this.context.getImageData(0, 0, this.width, this.height);
-      this.traverseData(imageData.data.buffer, this.width, this.height);
-      this.context.putImageData(imageData, 0, 0);
-    }
-
-    if (this.showFrameRate) {
-      this.context.font = '15px Arial';
-      this.context.fillStyle = '#cc0066';
-      this.context.fillText(`${this.fr.fps} FPS`, 10, 50);
-    }
-  }
-
-  traverseData(buffer, width, height) {
-    const sourceBuffer32 = new Uint32Array(buffer);
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        const pos = x + y * width;
-        sourceBuffer32[pos] = this.effectsPipe(sourceBuffer32[pos]);
-      }
-    }
-  }
-}
-
-export default Effective;
-
-const effects = {
-  invertColors(px) {
-    const r = ((px >> 0) & 0xff) ^ 255;
-    const g = ((px >> 8) & 0xff) ^ 255;
-    const b = ((px >> 16) & 0xff) ^ 255;
-    return 0xff000000 | (b << 16) | (g << 8) | r;
-  },
-
-  invertColors2(px) {
-    const r = ((px >> 0) & 0xff) ^ 255;
-    const g = ((px >> 8) & 0xff) ^ 255;
-    const b = ((px >> 16) & 0xff) ^ 255;
-    return 0xff000000 | (b << 16) | (g << 8) | r;
-  },
-
-  swapRedGreen(px) {
-    const r = ((px >> 0) & 0xff) ^ 255;
-    const g = ((px >> 8) & 0xff) ^ 255;
-    const b = ((px >> 16) & 0xff) ^ 255;
-    return 0xff000000 | (b << 16) | (r << 8) | g;
-  },
-};

@@ -1,13 +1,11 @@
 import Effective from '../classes/Effective';
-import { Invert, Invert2 } from '../classes/Effective/Effects';
+import { Invert, SwapRedGreen } from '../classes/Effective/Effects';
 
 const MESSAGE_TYPE = require('./messageType');
 const effective = new Effective();
 effective.showFrameRate();
-
-effective.addEffect('invertColors');
-effective.addEffect('invertColors2');
-effective.addEffect('swapRedGreen');
+effective.addEffect(new Invert());
+effective.addEffect(new SwapRedGreen());
 
 self.addEventListener('message', event => {
   const data = event.data;
