@@ -4,6 +4,8 @@ const MESSAGE_TYPE = require('./messageType');
 const effective = new Effective();
 effective.showFrameRate();
 effective.addEffect('invertColors');
+effective.addEffect('invertColors2');
+effective.addEffect('swapRedGreen');
 
 self.addEventListener('message', event => {
   const data = event.data;
