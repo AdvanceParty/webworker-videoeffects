@@ -27,6 +27,12 @@ From project root directory:
 
 ---
 
+## Architecture
+
+> Work In Progress. More complete documentation is coming soon.
+
+`index.js`
+
 ## Build
 
 `npm run build`

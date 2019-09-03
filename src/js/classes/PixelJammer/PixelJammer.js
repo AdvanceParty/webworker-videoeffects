@@ -3,13 +3,13 @@
 import FrameRater from '../FrameRater';
 import { pipe } from '../../utils/compositionTools';
 
-class Effective {
+class PixelJammer {
   constructor() {
     this.canvas = null;
     this.context = null;
     this.width = 0;
     this.height = 0;
-    this._effects = [];
+    this._filters = [];
   }
 
   showFrameRate() {
@@ -17,9 +17,9 @@ class Effective {
     this.fr = this.fr ? this.fr : new FrameRater();
   }
 
-  addEffect(effect) {
-    this._effects.push(effect);
-    this.effectsPipe = pipe(...this._effects);
+  addFilter(filter) {
+    this._filters.push(filter);
+    this.filterPipe = pipe(...this._filters);
   }
 
   initCanvas(canvas) {
@@ -38,7 +38,7 @@ class Effective {
       this.canvas.height = this.height;
     }
 
-    if (this._effects.length > 0) {
+    if (this._filters.length > 0) {
       this.context.drawImage(imageBitmap, 0, 0);
       const imageData = this.context.getImageData(0, 0, this.width, this.height);
       this.traversePixels(imageData.data.buffer, this.width, this.height);
@@ -57,13 +57,13 @@ class Effective {
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
         const pos = x + y * width;
-        sourceBuffer32[pos] = this.effectsPipe(sourceBuffer32[pos]);
+        sourceBuffer32[pos] = this.filterPipe(sourceBuffer32[pos]);
       }
     }
   }
 }
 
-export default Effective;
+export default PixelJammer;
 
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // :::::::::::::::::: IMAGE DATA AND BUFFERS ::::::::::::::::::
