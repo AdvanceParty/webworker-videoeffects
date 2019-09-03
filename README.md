@@ -31,7 +31,12 @@ From project root directory:
 
 > Work In Progress. More complete documentation is coming soon.
 
-`index.js`
+- index.js :: starts the demo application, creates HTML elements, hands canvas processing off to web worker
+- worker/canvas.worker.js :: Runs the effects renderer (pixel jammer) as an OffCanvas object via a web worker. Triggers the effects renderer to redraw on each frame.
+- PixelJammer :: Iterates through every pixel in an image and applies a pipeline of filters to transform each pixel's value. This demo connects it to a video src and updates at the highest framerate it can manage, but there's no reason why the class can't be used directly on any kind of image that can be rendered to canvas.
+- Filter :: Base class for pixel transformation effects. Extend this class to add your own pixel mutation effects. See examples in classes/PixelJammer/Filters.
+
+---
 
 ## Build
 
