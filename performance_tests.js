@@ -3,24 +3,27 @@ const rnd = () => Math.round(Math.random() * 256);
 const test = (rgb, iterations, method, repeat = 0) => {
   if (!results[method.name]) results[method.name] = [];
   for (var i = 0; i <= repeat; i++) {
-    rgb = rgb instanceof Array ? [...rgb] : { ...rgb };
+    rgb = Array.isArray(rgb) ? [...rgb] : { ...rgb };
     results[method.name].push(measure(iterations, rgb, method));
   }
 };
 
 const measure = (count, rgb, method = spread) => {
-  type = rgb instanceof Array ? 'Array' : 'Object';
+  type = Array.isArray(rgb) ? 'Array' : 'Object';
   let start = Date.now();
+
   for (var i = 0; i < count; i++) {
     rgb = method(rgb);
   }
+
   const time = (Date.now() - start) / 1000;
   return { method: method.name, type, time, data: JSON.stringify(rgb) };
 };
 
 // manual assignment is up to 10x faster than spread
 function manualAssign(rgb) {
-  if (rgb instanceof Array) {
+  if (Array.isArray(rgb)) {
+    // Array.isArray(rgb)
     return [rgb[0], rgb[1], rgb[2]];
   } else {
     return { r: rgb.r, g: rgb.g, b: rgb.b };
@@ -34,7 +37,7 @@ function serialise(rgb) {
 
 // spread is up to 10x slower than manual assignment
 function spread(rgb) {
-  if (rgb instanceof Array) {
+  if (Array.isArray(rgb)) {
     return [...rgb];
   } else {
     return { ...rgb };
@@ -51,9 +54,9 @@ test(rgbObj, iterations, serialise, repeatEachTest);
 test(rgbObj, iterations, spread, repeatEachTest);
 test(rgbObj, iterations, manualAssign, repeatEachTest);
 //
-// test(rgbArr, iterations, spread, repeatEachTest)
-// test(rgbArr, iterations, manualAssign, repeatEachTest)
-// test(rgbArr, iterations, serialise, repeatEachTest)
+test(rgbArr, iterations, spread, repeatEachTest);
+test(rgbArr, iterations, manualAssign, repeatEachTest);
+test(rgbArr, iterations, serialise, repeatEachTest);
 
 const details = Object.values(results).reduce((acc, method) => [...method, ...acc], []);
 const sorted = details.sort((a, b) => a.time > b.time);

@@ -6,6 +6,13 @@ const effective = new Effective();
 effective.showFrameRate();
 effective.addEffect(new Invert());
 effective.addEffect(new SwapRedGreen());
+effective.addEffect(new Invert());
+effective.addEffect(new SwapRedGreen());
+effective.addEffect(new SwapRedGreen());
+effective.addEffect(new SwapRedGreen());
+effective.addEffect(new SwapRedGreen());
+effective.addEffect(new SwapRedGreen());
+effective.addEffect(new SwapRedGreen());
 
 self.addEventListener('message', event => {
   const data = event.data;
